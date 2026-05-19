@@ -8,52 +8,69 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import password_validation
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.views import LoginView
+from django.views.generic import CreateView
+from django.urls import reverse_lazy
+from django.contrib import messages
 # Create your views here.
 
 
-def login_view(request):
-    if request.method == "GET":
-        return render(request, "accounts/login.html")
-    else:
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get("email")
-            password = form.cleaned_data.get("password")
-            try:
-                user = UserModel.objects.get(email=email)
-            except:
-                messages.error(request, "user not found")
-                return redirect("accounts:login")
+class MyLoginView(LoginView):
+    template_name = 'account/login.html'
+    authentication_form = LoginForm
+    def get_success_url(self):
+        return reverse_lazy('root:home')
 
-            email = user.email
-            user = authenticate(request, username=email, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect("root:home")
-            else:
-                messages.error(request, "Invalid username or password")
-                return redirect("accounts:login")
-        else:
-            messages.error(request, "Invalid form data")
-            return redirect("accounts:login")
+    
+
+# def login_view(request):
+#     if request.method == "GET":
+#         return render(request, "accounts/login.html")
+#     else:
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             email = form.cleaned_data.get("email")
+#             password = form.cleaned_data.get("password")
+#             try:
+#                 user = UserModel.objects.get(email=email)
+#             except:
+#                 messages.error(request, "user not found")
+#                 return redirect("accounts:login")
+
+#             email = user.email
+#             user = authenticate(request, username=email, password=password)
+#             if user is not None:
+#                 login(request, user)
+#                 return redirect("root:home")
+#             else:
+#                 messages.error(request, "Invalid username or password")
+#                 return redirect("accounts:login")
+#         else:
+#             messages.error(request, "Invalid form data")
+#             return redirect("accounts:login")
 
 #from .models import UserProfile   
 
-def register_view(request):
-    if request.method == "GET":
-        return render(request, "accounts/register.html") 
-    else:
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            #user = form.save()
-            #profile = UserProfile.objects.create(user=user)
-            #profile.save()
-            messages.success(request, "Registration successful. Please log in.")
-            return redirect("accounts:login")
-        else:
-            messages.error(request, "input data is not valid")
-            redirect (request.path_info)
+# def register_view(request):
+#     if request.method == "GET":
+#         return render(request, "accounts/register.html") 
+#     else:
+#         form = RegisterForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             #user = form.save()
+#             #profile = UserProfile.objects.create(user=user)
+#             #profile.save()
+#             messages.success(request, "Registration successful. Please log in.")
+#             return redirect("accounts:login")
+#         else:
+#             messages.error(request, "input data is not valid")
+#             redirect (request.path_info)
+
+class RegisterView(CreateView):
+    model = UserModel
+    form_class = RegisterForm
+    template_name = 'accouts/register.html'
 
 
 @login_required
