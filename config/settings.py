@@ -144,3 +144,15 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
 AUTH_USER_MODEL = "accounts.UserModel"
+
+
+import os
+
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key")
+
+DEBUG = os.getenv("DEBUG", "False") == "True"
+
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1",
+).split(",")

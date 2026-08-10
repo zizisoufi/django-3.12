@@ -72,17 +72,39 @@ class CustomManager(BaseUserManager):
 
 
 
+# ۱. ابتدا این تابع رو بالای کلاس UserModel اضافه کن
+def generate_short_uuid():
+    return shortuuid.uuid()
+
 class UserModel(AbstractBaseUser, PermissionsMixin):
-    id_code = models.CharField(max_length=10,unique=True,validators=[validate_id_code],default=random_id_code)
-    mobile = models.CharField( max_length=11,unique=True,validators=[validate_mobile],default=random_mobile)
+
+    id_code = models.CharField(
+        max_length=10,
+        unique=True,
+        validators=[validate_id_code],
+        default=random_id_code  
+    )
+    mobile = models.CharField(
+        max_length=11,
+        unique=True,
+        validators=[validate_mobile],
+        default=random_mobile  
+    )
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    uuid_id = models.CharField(max_length=22,default=shortuuid.uuid,unique=True,editable=False)
-    # automatically generates a short unique identifier
-    # prevents editing from admin or forms
+    
+    
+     
+    uuid_id = models.CharField(
+        max_length=22,
+        default=generate_short_uuid, 
+        unique=True,
+        editable=False
+    )
+
     USERNAME_FIELD = "id_code"
     REQUIRED_FIELDS = ["email", "mobile"]
 
@@ -90,6 +112,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
 
 
 class Profile(models.Model):
