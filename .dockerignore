@@ -1,8 +1,11 @@
-# Python virtual environment
+venv
+.venv
+__pycache__
+*.pyc
+db.sqlite3
+.git
+.env
 venv/
 .venv/
-env/
-
-# Git
-.git
-.gitignore
+__pycache__/
+*.sqlite3
