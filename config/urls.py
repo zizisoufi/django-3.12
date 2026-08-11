@@ -27,6 +27,8 @@ urlpatterns = [
     path("services/", include("services.urls")),
     path("properties/", include("properties.urls")),
     path("accounts/", include("accounts.urls")),
+    path("api/v1/", include("root.api.v1.urls")),
+    
     
 ]
 
